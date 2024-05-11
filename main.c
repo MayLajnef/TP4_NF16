@@ -5,7 +5,9 @@
 int main() {
 
     T_Arbre abr = NULL;
-
+    T_Sommet* sommet = creerSommet(8);
+    printSommet(sommet);
+    /*
     while (1) {
         printf("1. . Inserer N elements \n");
         printf("2. Rechercher un element \n");
@@ -36,13 +38,14 @@ int main() {
                 
                 break;
             case 7:
-                libererAbr(abr) ; 
+                libererAbr(abr); 
                 exit(1);
             default:
                 printf("Option non valide. Veuillez choisir une option entre 1 et 7.\n");
                 break;
         }
     }
+    */
 
     return 0;
 }
