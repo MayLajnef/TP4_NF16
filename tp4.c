@@ -21,17 +21,14 @@ void printSommet(T_Sommet* sommet)
     printf("S = [%d, %d]\n", sommet->borneInf, sommet->borneSup);
 }
 
+// A REVOIR
 T_Arbre insererElement(T_Arbre abr, int element)
 {
     if (abr == NULL)
         return creerSommet(element);
-    /*
-    if (rechercherElement(abr, element) != NULL)
-    {
-        printf("L'element existe deja dans l'abr !\n");
+
+    if (element >= abr->borneInf && element <= abr->borneSup)
         return abr;
-    }
-    */
 
     if (element < abr->borneInf)
         abr->filsGauche = insererElement(abr->filsGauche, element);
@@ -66,5 +63,30 @@ void afficherSommets(T_Arbre abr)
         printf("[%d ;%d]\n", abr->borneInf, abr->borneSup);
 
         afficherSommets(abr->filsDroit);
+    }
+}
+
+void afficherElements(T_Arbre abr)
+{
+    if (abr != NULL)
+    {
+        afficherElements(abr->filsGauche);
+        
+        for (int i=abr->borneInf; i <=abr->borneSup; i++)
+        {
+            printf("%d\t", i);
+        }
+
+        afficherElements(abr->filsDroit);
+    }
+}
+
+void libererAbr(T_Arbre abr)
+{
+    if (abr != NULL)
+    {
+        libererAbr(abr->filsGauche);
+        libererAbr(abr->filsDroit);
+        free(abr);
     }
 }
