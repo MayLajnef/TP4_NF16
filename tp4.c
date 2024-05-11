@@ -17,7 +17,6 @@ T_Sommet *creerSommet(int element)
 
 void printSommet(T_Sommet* sommet)
 {
-    printf("Infos du sommet : \n");
     printf("S = [%d, %d]\n", sommet->borneInf, sommet->borneSup);
 }
 
@@ -52,6 +51,18 @@ T_Arbre insererElement(T_Arbre abr, int element)
     }
 
     return abr;
+}
+
+T_Sommet *rechercherElement(T_Arbre abr, int element) 
+{
+    if (!abr)
+        return NULL;
+    else if (element >= abr->borneInf && element <= abr->borneSup)
+        return abr;
+    else if (element < abr->borneInf-1)
+        return rechercherElement(abr->filsGauche, element);
+    else 
+        return rechercherElement(abr->filsDroit, element);
 }
 
 void afficherSommets(T_Arbre abr)

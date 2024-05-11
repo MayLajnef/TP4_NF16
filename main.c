@@ -40,6 +40,19 @@ int main() {
                 }
                 break;
             case 2:
+                int entier;
+                printf("Recherche d'un element dans l'ABR...\n");
+                printf("Veuillez saisir l'entier que vous cherchez : ");
+                scanf("%d\n", &entier);
+                while (getchar() != '\n');
+                T_Sommet* intervalle_recherche = rechercherElement(abr, entier);
+                if (intervalle_recherche)
+                {
+                    printf("L'entier recherche est un element de l'intervalle ");
+                    printSommet(intervalle_recherche);
+                }
+                else
+                    printf("Element introuvable !\n");
                 break;
             case 3:
                 printf("Affichage de tous les sommets...\n");
