@@ -5,8 +5,14 @@
 int main() {
 
     T_Arbre abr = NULL;
+    /*
     T_Sommet* sommet = creerSommet(8);
     printSommet(sommet);
+    */
+    abr = insererElement(abr, 7);
+    abr = insererElement(abr, 6);
+    abr = insererElement(abr, 1);
+    afficherSommets(abr);
     /*
     while (1) {
         printf("1. . Inserer N elements \n");
