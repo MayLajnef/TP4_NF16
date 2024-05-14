@@ -5,6 +5,8 @@
 int main() {
 
     T_Arbre abr = NULL;
+    int entier;
+    int N, element;
     /*
     T_Sommet* sommet = creerSommet(8);
     printSommet(sommet);
@@ -27,7 +29,6 @@ int main() {
         scanf("%d", &input);
         switch (input) {
             case 1:
-                int N, element;
                 printf("Insertion de N elements...\n");
                 printf("Combien d'elements voulez-vous inserer dans l'ABR ?\n");
                 scanf("%d", &N);
@@ -40,7 +41,6 @@ int main() {
                 }
                 break;
             case 2:
-                int entier;
                 printf("Recherche d'un element dans l'ABR...\n");
                 printf("Veuillez saisir l'entier que vous cherchez : ");
                 scanf("%d\n", &entier);
