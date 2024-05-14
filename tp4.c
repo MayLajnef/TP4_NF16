@@ -20,34 +20,34 @@ void printSommet(T_Sommet* sommet)
     printf("S = [%d, %d]\n", sommet->borneInf, sommet->borneSup);
 }
 
-// A REVOIR
 T_Arbre insererElement(T_Arbre abr, int element)
 {
-    if (abr == NULL)
+    if (abr == NULL) {
         return creerSommet(element);
-
-    if (element >= abr->borneInf && element <= abr->borneSup)
-        return abr;
-
-    if (element < abr->borneInf)
-        abr->filsGauche = insererElement(abr->filsGauche, element);
-    else
-        abr->filsDroit = insererElement(abr->filsDroit, element);
-
-    // Après insertion, on fusionne les noeuds si nécessaire
-    if (abr->filsGauche && abr->borneInf == abr->filsGauche->borneSup + 1) {
-        abr->borneInf = abr->filsGauche->borneInf;
-        T_Sommet* tmp = abr->filsGauche;
-        abr->filsGauche = tmp->filsGauche;
-        tmp->filsGauche = NULL;
-        free(tmp);
     }
-    if (abr->filsDroit && abr->borneSup == abr->filsDroit->borneInf - 1) {
-        abr->borneSup = abr->filsDroit->borneSup;
-        T_Sommet* tmp = abr->filsDroit;
-        abr->filsDroit = tmp->filsDroit;
-        tmp->filsDroit = NULL;
-        free(tmp);
+
+    // Fusionner avec un intervalle existant si possible
+    if (element >= abr->borneInf - 1 && element <= abr->borneSup + 1) {
+        abr->borneInf = (element < abr->borneInf) ? element : abr->borneInf;
+        abr->borneSup = (element > abr->borneSup) ? element : abr->borneSup;
+
+        // Vérifier la fusion avec les fils
+        if (abr->filsGauche && abr->borneInf == abr->filsGauche->borneSup + 1) {
+            abr->borneInf = abr->filsGauche->borneInf;
+            T_Sommet *tmp = abr->filsGauche;
+            abr->filsGauche = tmp->filsGauche;
+            free(tmp);
+        }
+        if (abr->filsDroit && abr->borneSup == abr->filsDroit->borneInf - 1) {
+            abr->borneSup = abr->filsDroit->borneSup;
+            T_Sommet *tmp = abr->filsDroit;
+            abr->filsDroit = tmp->filsDroit;
+            free(tmp);
+        }
+    } else if (element < abr->borneInf) {
+        abr->filsGauche = insererElement(abr->filsGauche, element);
+    } else {
+        abr->filsDroit = insererElement(abr->filsDroit, element);
     }
 
     return abr;
@@ -91,6 +91,17 @@ void afficherElements(T_Arbre abr)
         afficherElements(abr->filsDroit);
     }
 }
+/*
+void tailleMemoire(T_Arbre abr)
+{
+    if (abr == NULL)
+        printf("L'ABR est vide !\n");
+    while (abr != NULL)
+    {
+
+    }
+}
+*/
 
 void libererAbr(T_Arbre abr)
 {
