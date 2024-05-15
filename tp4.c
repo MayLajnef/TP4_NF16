@@ -15,7 +15,7 @@ int saisirEntier() {
                 printf("Saisie incorrecte. Veuillez saisir un entier :\n");
             }
         } else {
-            printf("Erreur de lecture. Veuillez réessayer :\n");
+            printf("Erreur de lecture. Veuillez reessayer :\n");
         }
     }
 }
