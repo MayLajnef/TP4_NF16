@@ -11,6 +11,10 @@ typedef struct Sommet
 
 typedef T_Sommet* T_Arbre;
 
+int estUnEntier(char input[]);
+
+void menu(T_Arbre abr);
+
 T_Sommet *creerSommet(int element);
 
 void printSommet(T_Sommet* sommet);
