@@ -80,7 +80,10 @@ void menu(T_Arbre abr) {
                 }
                 break;
             case 5:
-                // Implémenter la suppression d'un élément ici
+                printf("Suppression d'un element...\n");
+                printf("Veuillez saisir l'element que vous voulez supprimer : ");
+                element = saisirEntier();
+                abr = supprimerElement(abr, element);
                 break;
             case 6:
                 // Implémenter l'affichage de la taille en mémoire ici
@@ -185,17 +188,72 @@ void afficherElements(T_Arbre abr)
         afficherElements(abr->filsDroit);
     }
 }
-/*
+
+// A REVOIR
+T_Arbre supprimerElement(T_Arbre abr, int element)
+{
+    if (!abr)
+        return NULL; // L'élément n'est pas présent dans l'ABR
+
+    T_Sommet* noeud = abr;
+
+    if (element < noeud->borneInf) // L'élément est dans le sous-arbre gauche
+        noeud->filsGauche = supprimerElement(noeud->filsGauche, element);
+    else if (element > noeud->borneSup) // L'élément est dans le sous-arbre droit
+        noeud->filsDroit = supprimerElement(noeud->filsDroit, element);
+    else
+    {
+        // On a trouvé l'intervalle qui contient la valeur à supprimer
+
+        if (noeud->borneInf == noeud->borneSup) // L'intervalle ne contient qu'un seul élément
+        {
+            // On doit supprimer le noeud en entier de l'ABR
+            T_Sommet* tmp = noeud;
+
+            if (!noeud->filsGauche) // Cas 1 : le noeud n'a pas de fils gauche
+            {
+                noeud = noeud->filsDroit; // Le fils droit devient la nouvelle racine
+            }
+            else if (!noeud->filsDroit) // Cas 2 : le noeud n'a pas de fils droit
+            {
+                noeud = noeud->filsGauche; // Le fils gauche devient la nouvelle racine
+            }
+            else // Cas 3 : le noeud a deux fils
+            {
+                // Remplacer le noeud par son successeur
+                T_Sommet* successeur = noeud->filsDroit;
+                while (successeur->filsGauche != NULL)
+                    successeur = successeur->filsGauche;
+
+                // Copier les valeurs du successeur dans le noeud courant
+                noeud->borneInf = successeur->borneInf;
+                noeud->borneSup = successeur->borneSup;
+
+                // Supprimer le successeur de son emplacement d'origine
+                noeud->filsDroit = supprimerElement(noeud->filsDroit, successeur->borneInf);
+            }
+
+            free(tmp); // Libérer la mémoire du noeud supprimé
+        }
+        else // L'intervalle contient plusieurs éléments
+        {
+            // Diviser l'intervalle en deux nouveaux intervalles
+            T_Sommet* nouveauNoeud = creerSommet(element + 1); // Créer un nouveau noeud pour la partie supérieure
+            nouveauNoeud->borneSup = noeud->borneSup;
+            noeud->borneSup = element - 1; // Mettre à jour la borne supérieure du noeud courant
+            nouveauNoeud->filsGauche = noeud->filsDroit; // Rattacher le sous-arbre droit au nouveau noeud
+            noeud->filsDroit = nouveauNoeud; // Rattacher le nouveau noeud au noeud courant
+        }
+    }
+
+    return abr;
+}
+
+//TO DO
 void tailleMemoire(T_Arbre abr)
 {
-    if (abr == NULL)
-        printf("L'ABR est vide !\n");
-    while (abr != NULL)
-    {
-
-    }
+    
 }
-*/
 
 void libererAbr(T_Arbre abr)
 {
