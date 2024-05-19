@@ -218,63 +218,70 @@ T_Arbre supprimerElement(T_Arbre abr, int element)
     if (!abr)
         return NULL; // L'élément n'est pas présent dans l'ABR
 
-    T_Sommet* noeud = abr;
 
-    if (element < noeud->borneInf) // L'élément est dans le sous-arbre gauche
-        noeud->filsGauche = supprimerElement(noeud->filsGauche, element);
-    else if (element > noeud->borneSup) // L'élément est dans le sous-arbre droit
-        noeud->filsDroit = supprimerElement(noeud->filsDroit, element);
+    if (element < abr->borneInf) // L'élément est dans le sous-arbre gauche
+    {
+        abr->filsGauche = supprimerElement(abr->filsGauche, element);
+    }
+    else if (element > abr->borneSup) // L'élément est dans le sous-arbre droit
+    {
+        abr->filsDroit = supprimerElement(abr->filsDroit, element);
+    }
     else
     {
         // On a trouvé l'intervalle qui contient la valeur à supprimer
 
-        if (noeud->borneInf == noeud->borneSup) // L'intervalle ne contient qu'un seul élément
+        if (abr->borneInf == abr->borneSup) // L'intervalle ne contient qu'un seul élément
         {
             // On doit supprimer le noeud en entier de l'ABR
-            T_Sommet* tmp = noeud;
 
-            if (!noeud->filsGauche) // Cas 1 : le noeud n'a pas de fils gauche
+            if (!abr->filsGauche) // Cas 1 : le noeud n'a pas de fils gauche
             {
-                noeud = noeud->filsDroit; // Le fils droit devient la nouvelle racine
+                T_Sommet* tmp = abr->filsDroit; // Le fils droit devient la nouvelle racine
+                free(abr); 
+                return tmp;
             }
-            else if (!noeud->filsDroit) // Cas 2 : le noeud n'a pas de fils droit
+            else if (!abr->filsDroit) // Cas 2 : le noeud n'a pas de fils droit
             {
-                noeud = noeud->filsGauche; // Le fils gauche devient la nouvelle racine
+                T_Sommet* tmp = abr->filsGauche; // Le fils gauche devient la nouvelle racine
+                free(abr);
+                return tmp;
             }
             else // Cas 3 : le noeud a deux fils
             {
                 // Remplacer le noeud par son successeur
-                T_Sommet* successeur = noeud->filsDroit;
+                T_Sommet* successeur = abr->filsDroit;
                 while (successeur->filsGauche != NULL)
                     successeur = successeur->filsGauche;
 
                 // Copier les valeurs du successeur dans le noeud courant
-                noeud->borneInf = successeur->borneInf;
-                noeud->borneSup = successeur->borneSup;
+                abr->borneInf = successeur->borneInf;
+                abr->borneSup = successeur->borneSup;
 
                 // Supprimer le successeur de son emplacement d'origine
-                noeud->filsDroit = supprimerElement(noeud->filsDroit, successeur->borneInf);
+                abr->filsDroit = supprimerElement(abr->filsDroit, successeur->borneInf);
+
             }
 
-            free(tmp); // Libérer la mémoire du noeud supprimé
+            //free(tmp); // Libérer la mémoire du noeud supprimé
         }
         else // L'intervalle contient plusieurs éléments
         {
-            if (element == noeud->borneInf) // Supprimer le premier élément de l'intervalle
+            if (element == abr->borneInf) // Supprimer le premier élément de l'intervalle
             {
-                noeud->borneInf++;
+                abr->borneInf++;
             }
-            else if (element == noeud->borneSup) // Supprimer le dernier élément de l'intervalle
+            else if (element == abr->borneSup) // Supprimer le dernier élément de l'intervalle
             {
-                noeud->borneSup--;
+                abr->borneSup--;
             }
             else // L'élément est au milieu, il faut diviser l'intervalle en deux
             {
                 T_Sommet* nouveauNoeud = creerSommet(element + 1); // Créer un nouveau noeud pour la partie supérieure
-                nouveauNoeud->borneSup = noeud->borneSup;
-                noeud->borneSup = element - 1; // Mettre à jour la borne supérieure du noeud courant
-                nouveauNoeud->filsGauche = noeud->filsDroit; // Rattacher le sous-arbre droit au nouveau noeud
-                noeud->filsDroit = nouveauNoeud; // Rattacher le nouveau noeud au noeud courant
+                nouveauNoeud->borneSup = abr->borneSup;
+                abr->borneSup = element - 1; // Mettre à jour la borne supérieure du noeud courant
+                nouveauNoeud->filsGauche = abr->filsDroit; // Rattacher le sous-arbre droit au nouveau abr
+                abr->filsDroit = nouveauNoeud; // Rattacher le nouveau noeud au noeud courant
             }
         }
     }
