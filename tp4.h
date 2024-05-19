@@ -13,6 +13,8 @@ typedef T_Sommet* T_Arbre;
 
 int estUnEntier(char input[]);
 
+void printTree(T_Arbre root, int space);
+
 void menu(T_Arbre abr);
 
 T_Sommet *creerSommet(int element);

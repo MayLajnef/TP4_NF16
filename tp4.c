@@ -20,6 +20,27 @@ int saisirEntier() {
     }
 }
 
+void printTree(T_Arbre root, int space) {
+    int COUNT = 5;  // Adjust space between levels
+    if (root == NULL)
+        return;
+
+    // Increase distance between levels
+    space += COUNT;
+
+    // Process right child first
+    printTree(root->filsDroit, space);
+
+    // Print current node after space count
+    printf("\n");
+    for (int i = COUNT; i < space; i++)
+        printf(" ");
+    printf("[%d, %d]\n", root->borneInf, root->borneSup);
+
+    // Process left child
+    printTree(root->filsGauche, space);
+}
+
 // Fonction pour le menu
 void menu(T_Arbre abr) {
     int entier;
@@ -49,6 +70,7 @@ void menu(T_Arbre abr) {
                     element = saisirEntier();
                     abr = insererElement(abr, element);
                 }
+                printTree(abr, 4);
                 break;
             case 2:
                 printf("Recherche d'un element dans l'ABR...\n");
@@ -61,6 +83,7 @@ void menu(T_Arbre abr) {
                 } else {
                     printf("Element introuvable !\n");
                 }
+                printTree(abr, 4);
                 break;
             case 3:
                 printf("Affichage de tous les sommets...\n");
@@ -237,12 +260,22 @@ T_Arbre supprimerElement(T_Arbre abr, int element)
         }
         else // L'intervalle contient plusieurs éléments
         {
-            // Diviser l'intervalle en deux nouveaux intervalles
-            T_Sommet* nouveauNoeud = creerSommet(element + 1); // Créer un nouveau noeud pour la partie supérieure
-            nouveauNoeud->borneSup = noeud->borneSup;
-            noeud->borneSup = element - 1; // Mettre à jour la borne supérieure du noeud courant
-            nouveauNoeud->filsGauche = noeud->filsDroit; // Rattacher le sous-arbre droit au nouveau noeud
-            noeud->filsDroit = nouveauNoeud; // Rattacher le nouveau noeud au noeud courant
+            if (element == noeud->borneInf) // Supprimer le premier élément de l'intervalle
+            {
+                noeud->borneInf++;
+            }
+            else if (element == noeud->borneSup) // Supprimer le dernier élément de l'intervalle
+            {
+                noeud->borneSup--;
+            }
+            else // L'élément est au milieu, il faut diviser l'intervalle en deux
+            {
+                T_Sommet* nouveauNoeud = creerSommet(element + 1); // Créer un nouveau noeud pour la partie supérieure
+                nouveauNoeud->borneSup = noeud->borneSup;
+                noeud->borneSup = element - 1; // Mettre à jour la borne supérieure du noeud courant
+                nouveauNoeud->filsGauche = noeud->filsDroit; // Rattacher le sous-arbre droit au nouveau noeud
+                noeud->filsDroit = nouveauNoeud; // Rattacher le nouveau noeud au noeud courant
+            }
         }
     }
 
@@ -252,7 +285,7 @@ T_Arbre supprimerElement(T_Arbre abr, int element)
 //TO DO
 void tailleMemoire(T_Arbre abr)
 {
-    
+
 }
 
 void libererAbr(T_Arbre abr)
