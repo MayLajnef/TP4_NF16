@@ -33,6 +33,10 @@ T_Arbre supprimerElement(T_Arbre abr, int element);
 
 void tailleMemoire(T_Arbre abr);
 
+int calculerTailleABR(T_Arbre abr);
+
+int calculerTailleClassique(T_Arbre abr);
+
 void libererAbr(T_Arbre abr);
 
 
