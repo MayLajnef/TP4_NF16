@@ -140,41 +140,48 @@ void printSommet(T_Sommet* sommet)
     printf("S = [%d, %d]\n", sommet->borneInf, sommet->borneSup);
 }
 
-T_Arbre insererElement(T_Arbre abr, int element) {
+T_Arbre insererElement(T_Arbre abr, int element) 
+{
     if (abr == NULL) {
         return creerSommet(element);
     }
 
-    // Vérifier si le nouvel élément peut être fusionné avec un intervalle existant
-    if (element == abr->borneInf - 1) {
-        abr->borneInf--;
-    } else if (element == abr->borneSup + 1) {
-        abr->borneSup++;
-    } else if (element < abr->borneInf) {
-        // Insérer dans le sous-arbre gauche
+    if (element < abr->borneInf - 1) {
         abr->filsGauche = insererElement(abr->filsGauche, element);
-    } else if (element > abr->borneSup) {
-        // Insérer dans le sous-arbre droit
+        // Fusion avec le fils gauche si nécessaire
+        if (abr->filsGauche && abr->filsGauche->borneSup + 1 >= abr->borneInf) {
+            abr->borneInf = abr->filsGauche->borneInf;
+            T_Sommet *tmp = abr->filsGauche;
+            abr->filsGauche = tmp->filsGauche;
+            free(tmp);
+        }
+    } else if (element > abr->borneSup + 1) {
         abr->filsDroit = insererElement(abr->filsDroit, element);
+        // Fusion avec le fils droit si nécessaire
+        if (abr->filsDroit && abr->filsDroit->borneInf - 1 <= abr->borneSup) {
+            abr->borneSup = abr->filsDroit->borneSup;
+            T_Sommet *tmp = abr->filsDroit;
+            abr->filsDroit = tmp->filsDroit;
+            free(tmp);
+        }
+    } else {
+        // Élargir l'intervalle du sommet actuel
+        abr->borneInf = (element < abr->borneInf) ? element : abr->borneInf;
+        abr->borneSup = (element > abr->borneSup) ? element : abr->borneSup;
+        // Vérifier la fusion avec les fils après l'élargissement
+        if (abr->filsGauche && abr->borneInf <= abr->filsGauche->borneSup + 1) {
+            abr->borneInf = abr->filsGauche->borneInf;
+            T_Sommet *tmp = abr->filsGauche;
+            abr->filsGauche = tmp->filsGauche;
+            free(tmp);
+        }
+        if (abr->filsDroit && abr->borneSup >= abr->filsDroit->borneInf - 1) {
+            abr->borneSup = abr->filsDroit->borneSup;
+            T_Sommet *tmp = abr->filsDroit;
+            abr->filsDroit = tmp->filsDroit;
+            free(tmp);
+        }
     }
-
-    // Fusionner les intervalles avec le fils gauche si nécessaire
-    if (abr->filsGauche && abr->filsGauche->borneSup + 1 >= abr->borneInf) {
-        abr->borneInf = abr->filsGauche->borneInf;
-        T_Sommet* temp = abr->filsGauche;
-        abr->filsGauche = abr->filsGauche->filsGauche;
-        free(temp);
-    }
-
-    // Fusionner les intervalles avec le fils droit si nécessaire
-    if (abr->filsDroit && abr->filsDroit->borneInf - 1 <= abr->borneSup) {
-        printf("[%d;%d]\n", abr->filsDroit->borneInf, abr->filsDroit->borneSup);
-        abr->borneSup = abr->filsDroit->borneSup;
-        T_Sommet* temp = abr->filsDroit;
-        abr->filsDroit = abr->filsDroit->filsDroit;
-        free(temp);
-    }
-
     return abr;
 }
 
