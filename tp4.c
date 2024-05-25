@@ -145,37 +145,39 @@ T_Arbre insererElement(T_Arbre abr, int element) {
         return creerSommet(element);
     }
 
-    if (element < abr->borneInf - 1) {
+    // Vérifier si le nouvel élément peut être fusionné avec un intervalle existant
+    if (element == abr->borneInf - 1) {
+        abr->borneInf--;
+    } else if (element == abr->borneSup + 1) {
+        abr->borneSup++;
+    } else if (element < abr->borneInf) {
+        // Insérer dans le sous-arbre gauche
         abr->filsGauche = insererElement(abr->filsGauche, element);
-    } else if (element > abr->borneSup + 1) {
+    } else if (element > abr->borneSup) {
+        // Insérer dans le sous-arbre droit
         abr->filsDroit = insererElement(abr->filsDroit, element);
-    } else {
-        // Élargir l'intervalle du sommet actuel
-        if (element < abr->borneInf) {
-            abr->borneInf = element;
-        } else if (element > abr->borneSup) {
-            abr->borneSup = element;
-        }
+    }
 
-        // Fusionner avec le fils gauche si nécessaire
-        if (abr->filsGauche && abr->borneInf <= abr->filsGauche->borneSup + 1) {
-            abr->borneInf = abr->filsGauche->borneInf;
-            T_Sommet *tmp = abr->filsGauche;
-            abr->filsGauche = tmp->filsGauche;
-            free(tmp);
-        }
+    // Fusionner les intervalles avec le fils gauche si nécessaire
+    if (abr->filsGauche && abr->filsGauche->borneSup + 1 >= abr->borneInf) {
+        abr->borneInf = abr->filsGauche->borneInf;
+        T_Sommet* temp = abr->filsGauche;
+        abr->filsGauche = abr->filsGauche->filsGauche;
+        free(temp);
+    }
 
-        // Fusionner avec le fils droit si nécessaire
-        if (abr->filsDroit && abr->borneSup >= abr->filsDroit->borneInf - 1) {
-            abr->borneSup = abr->filsDroit->borneSup;
-            T_Sommet *tmp = abr->filsDroit;
-            abr->filsDroit = tmp->filsDroit;
-            free(tmp);
-        }
+    // Fusionner les intervalles avec le fils droit si nécessaire
+    if (abr->filsDroit && abr->filsDroit->borneInf - 1 <= abr->borneSup) {
+        printf("[%d;%d]\n", abr->filsDroit->borneInf, abr->filsDroit->borneSup);
+        abr->borneSup = abr->filsDroit->borneSup;
+        T_Sommet* temp = abr->filsDroit;
+        abr->filsDroit = abr->filsDroit->filsDroit;
+        free(temp);
     }
 
     return abr;
 }
+
 
 T_Sommet *rechercherElement(T_Arbre abr, int element) 
 {
