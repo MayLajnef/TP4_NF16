@@ -20,25 +20,21 @@ int saisirEntier() {
     }
 }
 
-void printTree(T_Arbre root, int space) {
-    int COUNT = 5;  // Ajustement des espaces selon les niveaux
-    if (root == NULL)
+void afficherArbre(T_Arbre abr, int niveau) {
+    if (abr == NULL)
         return;
+    
+    afficherArbre(abr->filsGauche, niveau + 1); // Afficher le sous-arbre gauche d'abord
 
-    // Augmentation de la distance quand on passe d'un niveau à l'autre
-    space += COUNT;
-
-    // On traite le fils gauche en premier
-    printTree(root->filsGauche, space);
-
-    // On affiche le noeud courant après les espaces
     printf("\n");
-    for (int i = COUNT; i < space; i++)
-        printf(" ");
-    printf("[%d, %d]\n", root->borneInf, root->borneSup);
+    // Afficher les espaces pour l'indentation
+    for (int i = 0; i < niveau; i++)
 
-    // On traite le fils droit ensuite
-    printTree(root->filsDroit, space);
+        printf("\t");
+    // Afficher le nœud courant
+    printf("[%d;%d]\n", abr->borneInf, abr->borneSup);
+
+    afficherArbre(abr->filsDroit, niveau + 1); // Afficher le sous-arbre droit ensuite
 }
 
 // Fonction pour le menu
@@ -83,7 +79,6 @@ void menu(T_Arbre abr) {
                 } else {
                     printf("Element introuvable !\n");
                 }
-                printTree(abr, 4);
                 break;
             case 3:
                 printf("Affichage de tous les sommets...\n");
@@ -114,7 +109,7 @@ void menu(T_Arbre abr) {
                 break;
             case 7:
                 printf("Affichage de l'ABR...\n");
-                printTree(abr, 4);
+                afficherArbre(abr, 0);
                 break;
             case 8:
                 libererAbr(abr);
@@ -152,33 +147,25 @@ T_Arbre insererElement(T_Arbre abr, int element) {
 
     if (element < abr->borneInf - 1) {
         abr->filsGauche = insererElement(abr->filsGauche, element);
-        // Fusion avec le fils gauche si nécessaire
-        if (abr->filsGauche && abr->filsGauche->borneSup + 1 >= abr->borneInf) {
-            abr->borneInf = abr->filsGauche->borneInf;
-            T_Sommet *tmp = abr->filsGauche;
-            abr->filsGauche = tmp->filsGauche;
-            free(tmp);
-        }
     } else if (element > abr->borneSup + 1) {
         abr->filsDroit = insererElement(abr->filsDroit, element);
-        // Fusion avec le fils droit si nécessaire
-        if (abr->filsDroit && abr->filsDroit->borneInf - 1 <= abr->borneSup) {
-            abr->borneSup = abr->filsDroit->borneSup;
-            T_Sommet *tmp = abr->filsDroit;
-            abr->filsDroit = tmp->filsDroit;
-            free(tmp);
-        }
     } else {
         // Élargir l'intervalle du sommet actuel
-        abr->borneInf = (element < abr->borneInf) ? element : abr->borneInf;
-        abr->borneSup = (element > abr->borneSup) ? element : abr->borneSup;
-        // Vérifier la fusion avec les fils après l'élargissement
+        if (element < abr->borneInf) {
+            abr->borneInf = element;
+        } else if (element > abr->borneSup) {
+            abr->borneSup = element;
+        }
+
+        // Fusionner avec le fils gauche si nécessaire
         if (abr->filsGauche && abr->borneInf <= abr->filsGauche->borneSup + 1) {
             abr->borneInf = abr->filsGauche->borneInf;
             T_Sommet *tmp = abr->filsGauche;
             abr->filsGauche = tmp->filsGauche;
             free(tmp);
         }
+
+        // Fusionner avec le fils droit si nécessaire
         if (abr->filsDroit && abr->borneSup >= abr->filsDroit->borneInf - 1) {
             abr->borneSup = abr->filsDroit->borneSup;
             T_Sommet *tmp = abr->filsDroit;

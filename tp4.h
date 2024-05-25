@@ -13,7 +13,7 @@ typedef T_Sommet* T_Arbre;
 
 int estUnEntier(char input[]);
 
-void printTree(T_Arbre root, int space);
+void afficherArbre(T_Arbre abr, int niveau);
 
 void menu(T_Arbre abr);
 
