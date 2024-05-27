@@ -297,7 +297,7 @@ int calculerTailleClassique(T_Arbre abr) {
     // Compter le nombre d'éléments dans l'intervalle
     int nbElements = abr->borneSup - abr->borneInf + 1;
     
-    taille += nbElements * sizeof(int); // Taille des éléments
+    taille += nbElements * sizeof(Sommet_Classique); // Taille des éléments
     taille += calculerTailleClassique(abr->filsGauche); // Sous-arbre gauche
     taille += calculerTailleClassique(abr->filsDroit); // Sous-arbre droit
 

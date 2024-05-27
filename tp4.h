@@ -9,6 +9,15 @@ typedef struct Sommet
     struct Sommet* filsDroit;
 }T_Sommet;
 
+typedef struct Sommet_Classique
+{
+    int element;
+    struct Sommet_Classique* filsGauche;
+    struct Sommet_Classique* filsDroit;
+
+}Sommet_Classique;
+
+
 typedef T_Sommet* T_Arbre;
 
 int estUnEntier(char input[]);
