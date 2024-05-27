@@ -31,7 +31,7 @@ void afficherABR(T_Arbre abr, int space) {
     }
     else 
     {
-        char* fg_c= "nil";
+        char* fg_c= "NIL";
         printf("[%d;%d] , fg=%s ; ", abr->borneInf, abr->borneSup, fg_c);
     } 
     if (abr->filsDroit != NULL )
@@ -41,10 +41,9 @@ void afficherABR(T_Arbre abr, int space) {
     } 
     else
     {
-        char* fd_c= "nil";
+        char* fd_c= "NIL";
         printf("fd:%s\n", fd_c);
-    } 
-    //printf("[%d;%d] , fg=%d ; fd:%d\n", abr->borneInf, abr->borneSup, fg,fd );
+    }
     afficherABR(abr->filsGauche, space-5);
     afficherABR(abr->filsDroit, space+5);
 }
