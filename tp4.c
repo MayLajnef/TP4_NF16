@@ -24,11 +24,28 @@ void afficherABR(T_Arbre abr, int space) {
     int fg, fd ;  // ** debug
     if (abr == NULL) return;
 
-    if(abr->filsGauche !=NULL ) {fg=abr->filsGauche->borneInf;} else {fg=0 ;} ;
-    if(abr->filsDroit  !=NULL ) {fd=abr->filsDroit->borneInf;} else {fd=0;} ;
-    printf("[%d;%d] , fg=%d ; fd:%d\n", abr->borneInf, abr->borneSup, fg,fd );
+    if(abr->filsGauche !=NULL ) 
+    {
+        fg=abr->filsGauche->borneInf;
+        printf("[%d;%d] , fg=%d ; ",abr->borneInf, abr->borneSup, fg);
+    }
+    else 
+    {
+        char* fg_c= "nil";
+        printf("[%d;%d] , fg=%s ; ", abr->borneInf, abr->borneSup, fg_c);
+    } 
+    if (abr->filsDroit != NULL )
+    {
+        fd=abr->filsDroit->borneInf;
+        printf("fd:%d\n", fd);
+    } 
+    else
+    {
+        char* fd_c= "nil";
+        printf("fd:%s\n", fd_c);
+    } 
+    //printf("[%d;%d] , fg=%d ; fd:%d\n", abr->borneInf, abr->borneSup, fg,fd );
     afficherABR(abr->filsGauche, space-5);
-    printf("\n");
     afficherABR(abr->filsDroit, space+5);
 }
 
