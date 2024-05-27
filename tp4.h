@@ -19,8 +19,6 @@ void menu(T_Arbre abr);
 
 T_Sommet *creerSommet(int element);
 
-void printSommet(T_Sommet* sommet);
-
 T_Arbre insererElement(T_Arbre abr, int element);
 
 T_Sommet *rechercherElement(T_Arbre abr, int element);

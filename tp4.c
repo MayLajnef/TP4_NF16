@@ -23,18 +23,17 @@ int saisirEntier() {
 void afficherArbre(T_Arbre abr, int niveau) {
     if (abr == NULL)
         return;
-    
-    afficherArbre(abr->filsGauche, niveau + 1); // Afficher le sous-arbre gauche d'abord
+
+    afficherArbre(abr->filsDroit, niveau + 1); // Afficher le sous-arbre droit d'abord
 
     printf("\n");
     // Afficher les espaces pour l'indentation
     for (int i = 0; i < niveau; i++)
-
         printf("\t");
     // Afficher le nœud courant
     printf("[%d;%d]\n", abr->borneInf, abr->borneSup);
 
-    afficherArbre(abr->filsDroit, niveau + 1); // Afficher le sous-arbre droit ensuite
+    afficherArbre(abr->filsGauche, niveau + 1); // Afficher le sous-arbre gauche ensuite
 }
 
 // Fonction pour le menu
@@ -57,8 +56,7 @@ void menu(T_Arbre abr) {
         switch (input) {
             case 1:
                 printf("Insertion de N elements...\n");
-                do
-                {
+                do {
                     printf("Combien d'elements voulez-vous inserer dans l'ABR ?\n");
                     N = saisirEntier();
                 } while (N <= 0);
@@ -75,7 +73,7 @@ void menu(T_Arbre abr) {
                 T_Sommet* intervalle_recherche = rechercherElement(abr, entier);
                 if (intervalle_recherche) {
                     printf("L'entier recherche est un element de l'intervalle ");
-                    printSommet(intervalle_recherche);
+                    printf("S = [%d, %d].\n", intervalle_recherche->borneInf, intervalle_recherche->borneSup);
                 } else {
                     printf("Element introuvable !\n");
                 }
@@ -122,11 +120,9 @@ void menu(T_Arbre abr) {
 }
 
 
-T_Sommet *creerSommet(int element)
-{
+T_Sommet *creerSommet(int element) {
     T_Sommet* nouveau_sommet = (T_Sommet*) malloc(sizeof(T_Sommet));
-    if (nouveau_sommet == NULL)
-    {
+    if (nouveau_sommet == NULL) {
         printf("Echec de l'allocation memoire\n");
         return NULL;
     }
@@ -135,13 +131,7 @@ T_Sommet *creerSommet(int element)
     return nouveau_sommet;
 }
 
-void printSommet(T_Sommet* sommet)
-{
-    printf("S = [%d, %d]\n", sommet->borneInf, sommet->borneSup);
-}
-
-T_Arbre insererElement(T_Arbre abr, int element) 
-{
+T_Arbre insererElement(T_Arbre abr, int element) {
     if (abr == NULL) {
         return creerSommet(element);
     }
@@ -185,9 +175,7 @@ T_Arbre insererElement(T_Arbre abr, int element)
     return abr;
 }
 
-
-T_Sommet *rechercherElement(T_Arbre abr, int element) 
-{
+T_Sommet *rechercherElement(T_Arbre abr, int element) {
     if (!abr)
         return NULL;
     else if (element >= abr->borneInf && element <= abr->borneSup)
@@ -198,29 +186,20 @@ T_Sommet *rechercherElement(T_Arbre abr, int element)
         return rechercherElement(abr->filsDroit, element);
 }
 
-void afficherSommets(T_Arbre abr)
-{
-    if (abr != NULL)
-    {
+void afficherSommets(T_Arbre abr) {
+    if (abr != NULL) {
         afficherSommets(abr->filsGauche);
-        
         printf("[%d ;%d]\n", abr->borneInf, abr->borneSup);
-
         afficherSommets(abr->filsDroit);
     }
 }
 
-void afficherElements(T_Arbre abr)
-{
-    if (abr != NULL)
-    {
+void afficherElements(T_Arbre abr) {
+    if (abr != NULL) {
         afficherElements(abr->filsGauche);
-        
-        for (int i=abr->borneInf; i <=abr->borneSup; i++)
-        {
+        for (int i=abr->borneInf; i <=abr->borneSup; i++) {
             printf("%d\t", i);
         }
-
         afficherElements(abr->filsDroit);
     }
 }
@@ -325,10 +304,8 @@ int calculerTailleClassique(T_Arbre abr) {
     return taille;
 }
 
-void libererAbr(T_Arbre abr)
-{
-    if (abr != NULL)
-    {
+void libererAbr(T_Arbre abr) {
+    if (abr != NULL) {
         libererAbr(abr->filsGauche);
         libererAbr(abr->filsDroit);
         free(abr);
