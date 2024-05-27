@@ -20,20 +20,16 @@ int saisirEntier() {
     }
 }
 
-void afficherArbre(T_Arbre abr, int niveau) {
-    if (abr == NULL)
-        return;
+void afficherABR(T_Arbre abr, int space) {
+    int fg, fd ;  // ** debug
+    if (abr == NULL) return;
 
-    afficherArbre(abr->filsDroit, niveau + 1); // Afficher le sous-arbre droit d'abord
-
+    if(abr->filsGauche !=NULL ) {fg=abr->filsGauche->borneInf;} else {fg=0 ;} ;
+    if(abr->filsDroit  !=NULL ) {fd=abr->filsDroit->borneInf;} else {fd=0;} ;
+    printf("[%d;%d] , fg=%d ; fd:%d\n", abr->borneInf, abr->borneSup, fg,fd );
+    afficherABR(abr->filsGauche, space-5);
     printf("\n");
-    // Afficher les espaces pour l'indentation
-    for (int i = 0; i < niveau; i++)
-        printf("\t");
-    // Afficher le nœud courant
-    printf("[%d;%d]\n", abr->borneInf, abr->borneSup);
-
-    afficherArbre(abr->filsGauche, niveau + 1); // Afficher le sous-arbre gauche ensuite
+    afficherABR(abr->filsDroit, space+5);
 }
 
 // Fonction pour le menu
