@@ -283,36 +283,29 @@ void tailleMemoire(T_Arbre abr) {
     int tailleABR = calculerTailleABR(abr); // Calculer la taille de l'ABR actuel
     int tailleClassique = calculerTailleClassique(abr); // Calculer la taille d'un ABR classique
     int gainMemoire = tailleClassique - tailleABR;
-
     printf("Taille de l'ABR actuel : %d octets\n", tailleABR);
     printf("Taille d'un ABR classique : %d octets\n", tailleClassique);
     printf("Gain de memoire : %d octets\n", gainMemoire);
 }
-
 int calculerTailleABR(T_Arbre abr) {
     if (abr == NULL)
         return 0;
-
     int taille = sizeof(T_Sommet); // Taille d'un noeud
     taille += calculerTailleABR(abr->filsGauche); // Taille du sous-arbre gauche
     taille += calculerTailleABR(abr->filsDroit); // Taille du sous-arbre droit
-
     return taille;
 }
-
 int calculerTailleClassique(T_Arbre abr) {
     if (abr == NULL)
         return 0;
-
-    int taille = sizeof(T_Sommet); // Taille d'un noeud
+    int taille = sizeof(T_Sommet) - 4; // Taille d'un noeud
     
     // Compter le nombre d'éléments dans l'intervalle
-    int nbElements = abr->borneSup - abr->borneInf + 1;
+    int nbElements = abr->borneSup - abr->borneInf;
     
-    taille += nbElements * sizeof(Sommet_Classique); // Taille des éléments
+    taille += nbElements * taille; // Taille des éléments
     taille += calculerTailleClassique(abr->filsGauche); // Sous-arbre gauche
     taille += calculerTailleClassique(abr->filsDroit); // Sous-arbre droit
-
     return taille;
 }
 
