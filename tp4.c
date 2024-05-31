@@ -6,7 +6,7 @@
 int saisirEntier() {
     int entier;
     char buffer[100];
-    
+
     while (1) {
         if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
             if (sscanf(buffer, "%d", &entier) == 1) {
@@ -19,37 +19,38 @@ int saisirEntier() {
         }
     }
 }
-
 void afficherABR(T_Arbre abr, int space) {
-    int fg, fd ;  // ** debug
+    int fg, fd ;
     if (abr == NULL) return;
 
-    if(abr->filsGauche !=NULL ) 
+    if(abr->filsGauche !=NULL )
     {
         fg=abr->filsGauche->borneInf;
         printf("[%d;%d] , fg=%d ; ",abr->borneInf, abr->borneSup, fg);
     }
-    else 
+    else
     {
-        char* fg_c= "NIL";
+        char* fg_c= "nil";
         printf("[%d;%d] , fg=%s ; ", abr->borneInf, abr->borneSup, fg_c);
-    } 
+    }
     if (abr->filsDroit != NULL )
     {
         fd=abr->filsDroit->borneInf;
         printf("fd:%d\n", fd);
-    } 
+    }
     else
     {
-        char* fd_c= "NIL";
+        char* fd_c= "nil";
         printf("fd:%s\n", fd_c);
     }
+
     afficherABR(abr->filsGauche, space-5);
     afficherABR(abr->filsDroit, space+5);
 }
 
+
 // Fonction pour le menu
-void menu(T_Arbre abr) {
+void menu(T_Arbre *abr) {
     int entier;
     int N, element;
 
@@ -62,18 +63,19 @@ void menu(T_Arbre abr) {
         printf("6. Afficher la taille en memoire \n");
         printf("7. Afficher l'ABR \n");
         printf("8. Quitter \n");
-        printf("Veuillez saisir une option du menu (entre 1 et 7) :\n");
+        printf("Veuillez saisir une option du menu (entre 1 et 8) :\n");
         int input = saisirEntier();
-        
+
         switch (input) {
             case 1:
                 printf("Insertion de N elements...\n");
-                do {
+                do
+                {
                     printf("Combien d'elements voulez-vous inserer dans l'ABR ?\n");
                     N = saisirEntier();
                 } while (N <= 0);
                 for (int i = 1; i <= N; i++) {
-                    printf("\nVeuillez saisir l'element n°%d a inserer :\n", i);
+                    printf("\nVeuillez saisir l'element n%d a inserer :\n", i);
                     element = saisirEntier();
                     abr = insererElement(abr, element);
                 }
@@ -84,7 +86,7 @@ void menu(T_Arbre abr) {
                 entier = saisirEntier();
                 T_Sommet* intervalle_recherche = rechercherElement(abr, entier);
                 if (intervalle_recherche) {
-                    printf("L'entier recherche est un element de l'intervalle ");
+                    printf("L'entier recherche est dans l'arbre et est un element de l'intervalle ");
                     printf("S = [%d, %d].\n", intervalle_recherche->borneInf, intervalle_recherche->borneSup);
                 } else {
                     printf("Element introuvable !\n");
@@ -109,18 +111,27 @@ void menu(T_Arbre abr) {
                 break;
             case 5:
                 printf("Suppression d'un element...\n");
-                printf("Veuillez saisir l'element que vous voulez supprimer : ");
-                element = saisirEntier();
-                abr = supprimerElement(abr, element);
+                if (abr) {
+                    printf("Veuillez saisir l'element que vous voulez supprimer : ");
+                    element = saisirEntier();
+                    abr = supprimerElement(abr, element);
+                } else {
+                    printf("L'ABR est vide.\n");
+                }
+                afficherABR(abr, 0);
                 break;
             case 6:
                 printf("Affichage de la taille en memoire...\n");
                 tailleMemoire(abr);
                 break;
             case 7:
-                printf("Affichage de l'ABR...\n");
-                afficherArbre(abr, 0);
-                break;
+                if (abr){
+                    printf("Affichage de l'ABR...\n");
+                    afficherABR(abr,0);
+                    break;
+                } else {
+                    printf("L'ABR est vide.\n");
+                }
             case 8:
                 libererAbr(abr);
                 exit(0);
@@ -132,9 +143,11 @@ void menu(T_Arbre abr) {
 }
 
 
-T_Sommet *creerSommet(int element) {
+T_Sommet *creerSommet(int element)
+{
     T_Sommet* nouveau_sommet = (T_Sommet*) malloc(sizeof(T_Sommet));
-    if (nouveau_sommet == NULL) {
+    if (nouveau_sommet == NULL)
+    {
         printf("Echec de l'allocation memoire\n");
         return NULL;
     }
@@ -187,32 +200,48 @@ T_Arbre insererElement(T_Arbre abr, int element) {
     return abr;
 }
 
-T_Sommet *rechercherElement(T_Arbre abr, int element) {
-    if (!abr)
+T_Sommet *rechercherElement(T_Arbre abr, int element)
+{
+    T_Sommet *courant = abr;
+
+    if (!courant)
         return NULL;
-    else if (element >= abr->borneInf && element <= abr->borneSup)
-        return abr;
-    else if (element < abr->borneInf-1)
-        return rechercherElement(abr->filsGauche, element);
-    else 
-        return rechercherElement(abr->filsDroit, element);
+    else if (element >= courant->borneInf && element <= courant->borneSup)
+        return courant;
+    else if (element < courant->borneInf-1)
+        return rechercherElement(courant->filsGauche, element);
+    else
+        return rechercherElement(courant->filsDroit, element);
 }
 
-void afficherSommets(T_Arbre abr) {
-    if (abr != NULL) {
-        afficherSommets(abr->filsGauche);
-        printf("[%d ;%d]\n", abr->borneInf, abr->borneSup);
-        afficherSommets(abr->filsDroit);
+void afficherSommets(T_Arbre abr)
+{
+    T_Sommet *courant = abr;
+
+    if (abr != NULL)
+    {
+        afficherSommets(courant->filsGauche);
+
+        printf("[%d ;%d]\n", courant->borneInf, courant->borneSup);
+
+        afficherSommets(courant->filsDroit);
     }
 }
 
-void afficherElements(T_Arbre abr) {
-    if (abr != NULL) {
-        afficherElements(abr->filsGauche);
-        for (int i=abr->borneInf; i <=abr->borneSup; i++) {
+void afficherElements(T_Arbre abr)
+{
+    T_Sommet *courant = abr;
+
+    if (courant!= NULL)
+    {
+        afficherElements(courant->filsGauche);
+
+        for (int i=courant->borneInf; i <=courant->borneSup; i++)
+        {
             printf("%d\t", i);
         }
-        afficherElements(abr->filsDroit);
+
+        afficherElements(courant->filsDroit);
     }
 }
 
@@ -283,36 +312,51 @@ void tailleMemoire(T_Arbre abr) {
     int tailleABR = calculerTailleABR(abr); // Calculer la taille de l'ABR actuel
     int tailleClassique = calculerTailleClassique(abr); // Calculer la taille d'un ABR classique
     int gainMemoire = tailleClassique - tailleABR;
+
     printf("Taille de l'ABR actuel : %d octets\n", tailleABR);
     printf("Taille d'un ABR classique : %d octets\n", tailleClassique);
     printf("Gain de memoire : %d octets\n", gainMemoire);
 }
+
 int calculerTailleABR(T_Arbre abr) {
     if (abr == NULL)
         return 0;
-    int taille = sizeof(T_Sommet); // Taille d'un noeud
-    taille += calculerTailleABR(abr->filsGauche); // Taille du sous-arbre gauche
-    taille += calculerTailleABR(abr->filsDroit); // Taille du sous-arbre droit
-    return taille;
+
+    // Taille du sommet actuel
+    int tailleSommet = sizeof(T_Sommet);
+
+    // Calcul de la taille des sous-arbres gauche et droit
+    int tailleGauche = calculerTailleABR(abr->filsGauche);
+    int tailleDroite = calculerTailleABR(abr->filsDroit);
+
+    return tailleSommet + tailleGauche + tailleDroite;
 }
+
 int calculerTailleClassique(T_Arbre abr) {
     if (abr == NULL)
         return 0;
-    int taille = sizeof(T_Sommet) - 4; // Taille d'un noeud
-    
-    // Compter le nombre d'éléments dans l'intervalle
-    int nbElements = abr->borneSup - abr->borneInf;
-    
-    taille += nbElements * taille; // Taille des éléments
-    taille += calculerTailleClassique(abr->filsGauche); // Sous-arbre gauche
-    taille += calculerTailleClassique(abr->filsDroit); // Sous-arbre droit
-    return taille;
+
+    // Nombre d'éléments dans l'intervalle de ce sommet
+    int nbElements = abr->borneSup - abr->borneInf + 1;
+
+    // Taille des éléments de ce sommet convertis en nœuds classiques
+    int tailleSommet = nbElements * (sizeof(T_Sommet)-4);
+
+    // Calcul de la taille des sous-arbres gauche et droit
+    int tailleGauche = calculerTailleClassique(abr->filsGauche);
+    int tailleDroite = calculerTailleClassique(abr->filsDroit);
+
+    return tailleSommet + tailleGauche + tailleDroite;
 }
 
-void libererAbr(T_Arbre abr) {
-    if (abr != NULL) {
+void libererAbr(T_Arbre abr)
+{
+    if (abr != NULL)
+    {
         libererAbr(abr->filsGauche);
         libererAbr(abr->filsDroit);
         free(abr);
     }
 }
+
+
