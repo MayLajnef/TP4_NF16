@@ -9,13 +9,15 @@ typedef struct Sommet
     struct Sommet* filsDroit;
 }T_Sommet;
 
+
+
 typedef T_Sommet* T_Arbre;
 
 int estUnEntier(char input[]);
 
-void afficherArbre(T_Arbre abr, int niveau);
+void afficherABR(T_Arbre abr, int niveau);
 
-void menu(T_Arbre abr);
+void menu(T_Arbre* abr);
 
 T_Sommet *creerSommet(int element);
 
